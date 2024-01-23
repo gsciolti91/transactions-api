@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import java.math.BigDecimal
 import java.time.Instant
 
 @RestController("/transactions")
@@ -37,7 +36,7 @@ open class TransactionsController(
 
 private fun CreateTransactionRequest.toUnvalidatedTransaction(): Either<ParseTransactionRequestError, UnvalidatedTransaction> {
     return UnvalidatedTransaction(
-        Money(BigDecimal(amount)), // todo factory method
+        Money(amount, "EUR"), // todo factory method
         Instant.parse(timestamp)
     ).right()
 }

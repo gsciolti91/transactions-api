@@ -1,7 +1,6 @@
 package com.gsciolti
 
 import arrow.core.Either
-import java.math.BigDecimal
 import java.time.Instant
 
 class CreateTransaction(
@@ -33,7 +32,3 @@ data class UnvalidatedTransaction internal constructor(
     val amount: Money,
     val date: Instant
 )
-
-data class Money(private val value: BigDecimal) {
-
-}
