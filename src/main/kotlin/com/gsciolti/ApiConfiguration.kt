@@ -6,13 +6,15 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 open class ApiConfiguration {
 
+    private val transactionsRepository = LatestTransactionsRepository(seconds = 60)
+
     @Bean
     open fun createTransaction(): CreateTransaction {
-        return CreateTransaction(SaveTransactionInMemory())
+        return CreateTransaction(transactionsRepository)
     }
 
     @Bean
     open fun getStatistics(): GetAggregatedStatistics {
-        return GetLastMinuteAggregatedStatistics()
+        return transactionsRepository
     }
 }

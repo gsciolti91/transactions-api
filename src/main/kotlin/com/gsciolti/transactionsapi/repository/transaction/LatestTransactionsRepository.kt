@@ -15,8 +15,7 @@ import java.time.Instant
 class LatestTransactionsRepository(seconds: Long) : SaveTransaction, GetAggregatedStatistics, DeleteAllTransactions {
 
     private val aggregatedTransactions =
-        ShiftingHashMap
-            .indexed(seconds) { AggregatedTransactions.empty() }
+        IndexedShiftingHashMap(timestampOffsetSeconds) { AggregatedTransactions.empty() }
             .shiftingEvery(Duration.ofSeconds(1)) { first().clear() }
 
     override fun invoke(transaction: Transaction) = save(transaction)
@@ -26,28 +25,28 @@ class LatestTransactionsRepository(seconds: Long) : SaveTransaction, GetAggregat
 
         val index = Duration.between(transaction.timestamp, Instant.now()).seconds
 
-        // todo something about the null check?
         aggregatedTransactions[index]?.add(transaction)
 
         return transaction.right()
     }
 
-    fun getAggregatedStatistics(): Either<GetAggregatedStatistics.Error, Statistics> {
-
-        return aggregatedTransactions
+    fun getAggregatedStatistics(): Either<GetAggregatedStatistics.Error, Statistics> =
+        aggregatedTransactions
             .values()
-            .fold(AggregatedTransactions.empty()) { total, partialTransactions ->
+            .filter { it.count != 0L }
+            .fold(AggregatedTransactions.empty()) { total, partial ->
                 total.apply {
-                    sum += partialTransactions.sum
-                    count += partialTransactions.count
+                    sum += partial.sum
 
-                    if (min == null && partialTransactions.min != null || min != null && partialTransactions.min != null && partialTransactions.min!! < min!!) {
-                        min = partialTransactions.min
+                    if (count == 0L || partial.min < min) {
+                        min = partial.min
                     }
 
-                    if (max == null && partialTransactions.max != null || max != null && partialTransactions.max != null && partialTransactions.max!! > max!!) {
-                        max = partialTransactions.max
+                    if (partial.max > max) {
+                        max = partial.max
                     }
+
+                    count += partial.count
                 }
             }
             .let { total ->
@@ -60,7 +59,6 @@ class LatestTransactionsRepository(seconds: Long) : SaveTransaction, GetAggregat
                 )
             }
             .right()
-    }
 
     override fun deleteAll(): Either<DeleteAllTransactions.Error, Unit> {
         aggregatedTransactions.values().forEach(AggregatedTransactions::clear)
@@ -69,16 +67,16 @@ class LatestTransactionsRepository(seconds: Long) : SaveTransaction, GetAggregat
 
     private class AggregatedTransactions(
         var sum: Money,
-        var max: Money?,
-        var min: Money?,
+        var max: Money,
+        var min: Money,
         var count: Long
     ) {
 
         companion object {
             fun empty() = AggregatedTransactions(
                 eur("0"),
-                null,
-                null,
+                eur("0"),
+                eur("0"),
                 0
             )
         }
@@ -86,23 +84,23 @@ class LatestTransactionsRepository(seconds: Long) : SaveTransaction, GetAggregat
         fun add(transaction: Transaction) {
             synchronized(this) {
                 sum += transaction.amount
-                count++
 
-                // todo feature envy
-                if (min == null || transaction.amount.value < min!!.value) {
+                if (count == 0L || transaction.amount < min) {
                     min = transaction.amount
                 }
 
-                if (max == null || transaction.amount.value > max!!.value) {
+                if (transaction.amount > max) {
                     max = transaction.amount
                 }
+
+                count++
             }
         }
 
         fun clear() {
             sum = eur("0")
-            max = null
-            min = null
+            max = eur("0")
+            min = eur("0")
             count = 0
         }
     }

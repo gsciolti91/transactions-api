@@ -1,6 +1,6 @@
 package com.gsciolti
 
-class Statistics(
+data class Statistics(
     val sum: Money,
     val avg: Money,
     val max: Money,

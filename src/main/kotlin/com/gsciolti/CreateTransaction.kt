@@ -20,8 +20,8 @@ class CreateTransaction(
 }
 
 data class Transaction(
-    private val amount: Money,
-    private val date: Instant
+    val amount: Money,
+    val timestamp: Instant
 )
 
 sealed class CreateTransactionError {

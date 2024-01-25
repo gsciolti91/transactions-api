@@ -2,6 +2,9 @@ package com.gsciolti
 
 import arrow.core.Either
 
-interface SaveTransaction : (Transaction) -> Either<SaveTransaction.Error, Transaction> {
+interface SaveTransaction {
+
+    operator fun invoke(transaction: Transaction): Either<Error, Transaction>
+
     sealed class Error
 }
