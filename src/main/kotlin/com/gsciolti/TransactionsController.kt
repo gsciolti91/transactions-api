@@ -1,12 +1,17 @@
 package com.gsciolti
 
 import arrow.core.Either
+import arrow.core.Either.Companion.catch
 import arrow.core.flatMap
-import arrow.core.right
+import com.gsciolti.CreateTransactionError.TransactionIsInTheFuture
+import com.gsciolti.CreateTransactionError.TransactionIsTooOld
+import com.gsciolti.Money.Companion.eur
 import org.springframework.http.HttpStatus.CREATED
+import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.ResponseEntity
 import org.springframework.http.ResponseEntity.noContent
 import org.springframework.http.ResponseEntity.status
+import org.springframework.http.ResponseEntity.unprocessableEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -23,7 +28,18 @@ open class TransactionsController(
             .toUnvalidatedTransaction()
             .flatMap(createTransaction)
             .fold({
-                TODO("Handle create transaction errors")
+                when (it) {
+                    is InvalidJson -> {
+                        unprocessableEntity().build()
+                    }
+
+                    is CreateTransactionError -> when (it) {
+                        TransactionIsInTheFuture -> unprocessableEntity().build()
+                        TransactionIsTooOld -> noContent().build()
+                    }
+
+                    else -> status(INTERNAL_SERVER_ERROR).build()
+                }
             }, {
                 status(CREATED).build()
             })
@@ -34,13 +50,14 @@ open class TransactionsController(
     }
 }
 
-private fun CreateTransactionRequest.toUnvalidatedTransaction(): Either<ParseTransactionRequestError, UnvalidatedTransaction> {
-    return UnvalidatedTransaction(
-        Money(amount, "EUR"), // todo factory method
-        Instant.parse(timestamp)
-    ).right()
-}
+private fun CreateTransactionRequest.toUnvalidatedTransaction(): Either<InvalidJson, UnvalidatedTransaction> =
+    catch { Instant.parse(timestamp) }
+        .flatMap { timestamp ->
+            catch { eur(amount) }
+                .map { amount ->
+                    UnvalidatedTransaction(amount, timestamp)
+                }
+        }
+        .mapLeft { InvalidJson }
 
-class ParseTransactionRequestError {
-
-}
+object InvalidJson
