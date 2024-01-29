@@ -8,7 +8,7 @@ import java.math.RoundingMode.HALF_UP
 import java.time.Duration
 import java.time.Instant
 
-class LatestTransactionsRepository(seconds: Long) : SaveTransaction, GetAggregatedStatistics {
+class LatestTransactionsRepository(seconds: Long) : SaveTransaction, GetAggregatedStatistics, DeleteAllTransactions {
 
     private val aggregatedTransactions =
         ShiftingHashMap
@@ -99,5 +99,10 @@ class LatestTransactionsRepository(seconds: Long) : SaveTransaction, GetAggregat
             min = null
             count = 0
         }
+    }
+
+    override fun deleteAll(): Either<DeleteAllTransactions.Error, Unit> {
+        aggregatedTransactions.values().forEach(AggregatedTransactions::clear)
+        return Unit.right()
     }
 }

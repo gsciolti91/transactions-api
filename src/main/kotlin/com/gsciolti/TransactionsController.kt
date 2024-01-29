@@ -20,7 +20,8 @@ import java.time.Instant
 
 @RestController("/transactions")
 open class TransactionsController(
-    private val createTransaction: CreateTransaction
+    private val createTransaction: CreateTransaction,
+    private val deleteAllTransactions: DeleteAllTransactions
 ) {
     @PostMapping
     fun createTransaction(@RequestBody request: CreateTransactionRequest): ResponseEntity<Any> =
@@ -46,6 +47,9 @@ open class TransactionsController(
 
     @DeleteMapping
     fun deleteAllTransactions(): ResponseEntity<Any> {
+
+        deleteAllTransactions.deleteAll()
+
         return noContent().build()
     }
 }

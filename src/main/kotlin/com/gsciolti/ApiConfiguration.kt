@@ -17,4 +17,9 @@ open class ApiConfiguration {
     open fun getStatistics(): GetAggregatedStatistics {
         return transactionsRepository
     }
+
+    @Bean
+    open fun deleteAllTransactions(): DeleteAllTransactions {
+        return transactionsRepository
+    }
 }
