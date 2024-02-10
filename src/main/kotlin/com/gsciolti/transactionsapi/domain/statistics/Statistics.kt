@@ -1,4 +1,6 @@
-package com.gsciolti
+package com.gsciolti.transactionsapi.domain.statistics
+
+import com.gsciolti.transactionsapi.domain.Money
 
 data class Statistics(
     val sum: Money,

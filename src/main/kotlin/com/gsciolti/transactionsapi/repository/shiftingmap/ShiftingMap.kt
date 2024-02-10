@@ -1,4 +1,4 @@
-package com.gsciolti
+package com.gsciolti.transactionsapi.repository.shiftingmap
 
 interface ShiftingMap<K, V> {
 

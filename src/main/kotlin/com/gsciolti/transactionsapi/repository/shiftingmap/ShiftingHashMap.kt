@@ -1,4 +1,4 @@
-package com.gsciolti
+package com.gsciolti.transactionsapi.repository.shiftingmap
 
 open class ShiftingHashMap<K : Any, V : Any>(
     firstPair: Pair<K, V>,

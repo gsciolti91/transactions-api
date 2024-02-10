@@ -1,5 +1,9 @@
-package com.gsciolti
+package com.gsciolti.transactionsapi.api
 
+import com.gsciolti.transactionsapi.domain.statistics.GetAggregatedStatistics
+import com.gsciolti.transactionsapi.domain.transaction.CreateTransaction
+import com.gsciolti.transactionsapi.domain.transaction.DeleteAllTransactions
+import com.gsciolti.transactionsapi.repository.LatestTransactionsRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

@@ -1,4 +1,4 @@
-package com.gsciolti
+package com.gsciolti.transactionsapi.api.transaction
 
 data class CreateTransactionRequest(
     val amount: String,

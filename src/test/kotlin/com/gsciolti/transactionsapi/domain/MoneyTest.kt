@@ -1,6 +1,6 @@
-package com.gsciolti
+package com.gsciolti.transactionsapi.domain
 
-import com.gsciolti.Money.Companion.eur
+import com.gsciolti.transactionsapi.domain.Money.Companion.eur
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

@@ -1,4 +1,4 @@
-package com.gsciolti
+package com.gsciolti.transactionsapi.domain.statistics
 
 import arrow.core.Either
 

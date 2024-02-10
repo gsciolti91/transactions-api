@@ -1,4 +1,4 @@
-package com.gsciolti
+package com.gsciolti.transactionsapi.api.statistics
 
 data class StatisticsResponse(
     val sum: String,

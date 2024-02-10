@@ -1,4 +1,4 @@
-package com.gsciolti
+package com.gsciolti.transactionsapi.repository.shiftingmap
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -7,8 +7,6 @@ import java.lang.Thread.sleep
 import java.time.Duration.ofMillis
 
 class ShiftingHashMapTest {
-
-    // todo concurrent
 
     @Test
     fun `should allow to get elements`() {

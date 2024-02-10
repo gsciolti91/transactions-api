@@ -1,4 +1,4 @@
-package com.gsciolti
+package com.gsciolti.transactionsapi.repository.shiftingmap
 
 import java.time.Duration
 import java.util.concurrent.Executors.newScheduledThreadPool

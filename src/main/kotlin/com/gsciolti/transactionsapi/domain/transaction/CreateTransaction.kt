@@ -1,4 +1,4 @@
-package com.gsciolti
+package com.gsciolti.transactionsapi.domain.transaction
 
 import arrow.core.Either
 import arrow.core.flatMap
@@ -11,7 +11,7 @@ import java.time.Instant
 
 class CreateTransaction(
     private val saveTransaction: SaveTransaction
-) : (UnvalidatedTransaction) -> Either<CreateTransactionError, Transaction> {
+) : (UnvalidatedTransaction) -> Either<CreateTransaction.Error, Transaction> {
 
     override fun invoke(unvalidatedTransaction: UnvalidatedTransaction): Either<Error, Transaction> {
         val now = Instant.now()
@@ -45,19 +45,11 @@ class CreateTransaction(
             else
                 TransactionIsInTheFuture.left()
         }
+
+    sealed class Error {
+        object TransactionIsTooOld : Error()
+        object TransactionIsInTheFuture : Error()
+    }
 }
 
-data class Transaction internal constructor(
-    val amount: Money,
-    val timestamp: Instant
-)
 
-sealed class CreateTransactionError {
-    object TransactionIsTooOld : CreateTransactionError()
-    object TransactionIsInTheFuture : CreateTransactionError()
-}
-
-data class UnvalidatedTransaction(
-    val amount: Money,
-    val date: Instant
-)

@@ -1,4 +1,4 @@
-package com.gsciolti
+package com.gsciolti.transactionsapi.domain
 
 import java.math.BigDecimal
 import java.math.RoundingMode.HALF_UP

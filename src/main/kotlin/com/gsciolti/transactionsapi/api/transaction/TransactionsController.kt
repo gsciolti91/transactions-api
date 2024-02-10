@@ -1,11 +1,15 @@
-package com.gsciolti
+package com.gsciolti.transactionsapi.api.transaction
 
 import arrow.core.Either
 import arrow.core.Either.Companion.catch
 import arrow.core.flatMap
-import com.gsciolti.CreateTransactionError.TransactionIsInTheFuture
-import com.gsciolti.CreateTransactionError.TransactionIsTooOld
-import com.gsciolti.Money.Companion.eur
+import com.gsciolti.transactionsapi.api.transaction.CreateTransactionApiError.InvalidJson
+import com.gsciolti.transactionsapi.domain.Money.Companion.eur
+import com.gsciolti.transactionsapi.domain.transaction.CreateTransaction
+import com.gsciolti.transactionsapi.domain.transaction.CreateTransaction.Error.TransactionIsInTheFuture
+import com.gsciolti.transactionsapi.domain.transaction.CreateTransaction.Error.TransactionIsTooOld
+import com.gsciolti.transactionsapi.domain.transaction.DeleteAllTransactions
+import com.gsciolti.transactionsapi.domain.transaction.UnvalidatedTransaction
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.ResponseEntity
@@ -34,7 +38,7 @@ open class TransactionsController(
                         unprocessableEntity().build()
                     }
 
-                    is CreateTransactionError -> when (it) {
+                    is CreateTransaction.Error -> when (it) {
                         TransactionIsInTheFuture -> unprocessableEntity().build()
                         TransactionIsTooOld -> noContent().build()
                     }

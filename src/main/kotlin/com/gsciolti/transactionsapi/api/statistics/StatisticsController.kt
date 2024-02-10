@@ -1,9 +1,9 @@
-package com.gsciolti
+package com.gsciolti.transactionsapi.api.statistics
 
-import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
+import com.gsciolti.transactionsapi.domain.statistics.GetAggregatedStatistics
+import com.gsciolti.transactionsapi.domain.statistics.Statistics
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.http.ResponseEntity.ok
-import org.springframework.http.ResponseEntity.status
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -16,8 +16,8 @@ open class StatisticsController(
     fun getAStatistics(): ResponseEntity<Any> =
         getAggregatedStatistics()
             .fold(
-                { status(INTERNAL_SERVER_ERROR).build() },
-                { ok(it.toResponse()) })
+                { ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build() },
+                { ResponseEntity.ok(it.toResponse()) })
 }
 
 private fun Statistics.toResponse(): StatisticsResponse {

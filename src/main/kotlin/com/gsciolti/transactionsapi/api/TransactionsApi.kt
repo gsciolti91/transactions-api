@@ -1,4 +1,4 @@
-package com.gsciolti.transactionsapi
+package com.gsciolti.transactionsapi.api
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
