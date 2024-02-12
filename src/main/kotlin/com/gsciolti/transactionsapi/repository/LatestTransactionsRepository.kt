@@ -16,7 +16,10 @@ import com.gsciolti.transactionsapi.repository.shiftingmap.shiftingEvery
 import java.time.Duration
 import java.time.Instant
 
-class LatestTransactionsRepository(seconds: Long) : SaveTransaction, GetAggregatedStatistics, DeleteAllTransactions {
+class LatestTransactionsRepository(
+    private val timestampUpperBound: () -> Instant,
+    timestampOffsetSeconds: Long
+) : SaveTransaction, GetAggregatedStatistics, DeleteAllTransactions {
 
     private val aggregatedTransactions =
         IndexedShiftingHashMap(timestampOffsetSeconds) { AggregatedTransactions.empty() }
@@ -24,7 +27,7 @@ class LatestTransactionsRepository(seconds: Long) : SaveTransaction, GetAggregat
 
     override fun save(transaction: Transaction): Either<SaveTransaction.Error, Transaction> {
 
-        val index = Duration.between(transaction.timestamp, Instant.now()).seconds
+        val index = Duration.between(transaction.timestamp, timestampUpperBound()).seconds
 
         aggregatedTransactions[index]?.add(transaction)
 

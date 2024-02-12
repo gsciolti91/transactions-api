@@ -10,15 +10,17 @@ import com.gsciolti.transactionsapi.functional.EitherExtensions.validate
 import java.time.Instant
 
 class CreateTransaction(
+    private val timestampUpperBound: () -> Instant,
+    private val timestampOffsetSeconds: Long,
     saveTransaction: SaveTransaction
 ) : (UnvalidatedTransaction) -> Either<CreateTransaction.Error, Transaction> {
 
     override fun invoke(unvalidatedTransaction: UnvalidatedTransaction): Either<Error, Transaction> {
-        val now = Instant.now()
-        val lowerBound = now.minusSeconds(60)
+        val upperBound = timestampUpperBound()
+        val lowerBound = upperBound.minusSeconds(timestampOffsetSeconds)
 
         return unvalidatedTransaction
-            .validate(isBetween(lowerBound, now))
+            .validate(isBetween(lowerBound, upperBound))
             .map { Transaction(it.amount, it.date) }
             .flatMap(saveTransaction)
     }
@@ -27,21 +29,19 @@ class CreateTransaction(
         transaction.validate(isAfter(start), isBefore(end))
     }
 
-    private fun isAfter(timestamp: Instant): (UnvalidatedTransaction) -> Either<Error, UnvalidatedTransaction> =
-        { transaction: UnvalidatedTransaction ->
-            if (transaction.date.isAfter(timestamp))
-                transaction.right()
-            else
-                TransactionIsTooOld.left()
-        }
+    private fun isAfter(timestamp: Instant) = { transaction: UnvalidatedTransaction ->
+        if (transaction.date.isAfter(timestamp))
+            transaction.right()
+        else
+            TransactionIsTooOld.left()
+    }
 
-    private fun isBefore(timestamp: Instant): (UnvalidatedTransaction) -> Either<Error, UnvalidatedTransaction> =
-        { transaction: UnvalidatedTransaction ->
-            if (transaction.date.isBefore(timestamp))
-                transaction.right()
-            else
-                TransactionIsInTheFuture.left()
-        }
+    private fun isBefore(timestamp: Instant) = { transaction: UnvalidatedTransaction ->
+        if (transaction.date.isBefore(timestamp))
+            transaction.right()
+        else
+            TransactionIsInTheFuture.left()
+    }
 
     private val saveTransaction = { transaction: Transaction ->
         saveTransaction

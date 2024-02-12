@@ -12,11 +12,10 @@ import kotlin.random.Random
 
 class LatestTransactionsRepositoryTest {
 
-    private val repository = LatestTransactionsRepository(seconds = 60)
+    private val repository = LatestTransactionsRepository({ now() }, timestampOffsetSeconds = 60)
 
     @Test
     fun `it should get aggregated statistics`() {
-
         repository.save(Transaction(eur("10.05"), now().minusMillis(500)))
         repository.save(Transaction(eur("5.50"), now().minusMillis(1500)))
 
@@ -34,16 +33,13 @@ class LatestTransactionsRepositoryTest {
     }
 
     @Test
-    fun `it should only keep last x seconds of transactions`() {
-
-        val repository = LatestTransactionsRepository(seconds = 2)
+    fun `it should only keep the last x seconds of transactions`() {
+        val repository = LatestTransactionsRepository({ now() }, timestampOffsetSeconds = 2)
 
         repository.save(Transaction(eur("5"), now().minusMillis(1500)))
-
         sleep(1100)
 
         val statistics = repository.getAggregatedStatistics()
-
         assertEquals(
             Statistics(
                 sum = eur("0"),
@@ -57,13 +53,11 @@ class LatestTransactionsRepositoryTest {
 
     @Test
     fun `it should delete all transactions`() {
-
         repository.save(Transaction(eur("10.05"), now()))
 
         repository.deleteAll()
 
         val statistics = repository.getAggregatedStatistics()
-
         assertEquals(
             Statistics(
                 sum = eur("0"),
@@ -77,10 +71,8 @@ class LatestTransactionsRepositoryTest {
 
     @Test
     fun `it should be thread safe`() {
-
         val last10Seconds = 10L
-        val repository = LatestTransactionsRepository(seconds = last10Seconds)
-
+        val repository = LatestTransactionsRepository({ now() }, timestampOffsetSeconds = last10Seconds)
         val threads = listOf(
             Thread(repository.save1000Eur(last10Seconds)),
             Thread(repository.save1000Eur(last10Seconds)),
@@ -93,7 +85,6 @@ class LatestTransactionsRepositoryTest {
         threads.forEach(Thread::join)
 
         val statistics = repository.getAggregatedStatistics()
-
         assertEquals(
             Statistics(
                 sum = eur("5000"),
