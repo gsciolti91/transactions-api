@@ -4,6 +4,8 @@ import com.gsciolti.transactionsapi.domain.statistics.GetAggregatedStatistics
 import com.gsciolti.transactionsapi.domain.statistics.Statistics
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.ResponseEntity.ok
+import org.springframework.http.ResponseEntity.status
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -15,18 +17,18 @@ open class StatisticsController(
     fun getStatistics(): ResponseEntity<Any> =
         getAggregatedStatistics()
             .fold(
-                { ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build() },
-                { ResponseEntity.ok(it.toResponse()) })
+                { status(HttpStatus.INTERNAL_SERVER_ERROR).build() },
+                { ok(it.toResponse()) })
 
     private val getAggregatedStatistics = getAggregatedStatistics::getAggregatedStatistics
 }
 
 private fun Statistics.toResponse(): StatisticsResponse {
     return StatisticsResponse(
-        sum.value.toPlainString(),
-        avg.value.toPlainString(),
-        max.value.toPlainString(),
-        min.value.toPlainString(),
+        sum.value.toString(),
+        avg.value.toString(),
+        max.value.toString(),
+        min.value.toString(),
         count
     )
 }
