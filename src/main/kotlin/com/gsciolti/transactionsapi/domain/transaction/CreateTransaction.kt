@@ -10,7 +10,7 @@ import com.gsciolti.transactionsapi.functional.EitherExtensions.validate
 import java.time.Instant
 
 class CreateTransaction(
-    private val saveTransaction: SaveTransaction
+    saveTransaction: SaveTransaction
 ) : (UnvalidatedTransaction) -> Either<CreateTransaction.Error, Transaction> {
 
     override fun invoke(unvalidatedTransaction: UnvalidatedTransaction): Either<Error, Transaction> {
@@ -20,10 +20,7 @@ class CreateTransaction(
         return unvalidatedTransaction
             .validate(isBetween(lowerBound, now))
             .map { Transaction(it.amount, it.date) }
-            .flatMap {
-                saveTransaction(it)
-                    .mapLeft { TODO("Handle save errors") }
-            }
+            .flatMap(saveTransaction)
     }
 
     private fun isBetween(start: Instant, end: Instant) = { transaction: UnvalidatedTransaction ->
@@ -45,6 +42,12 @@ class CreateTransaction(
             else
                 TransactionIsInTheFuture.left()
         }
+
+    private val saveTransaction = { transaction: Transaction ->
+        saveTransaction
+            .save(transaction)
+            .mapLeft { TODO("Handle save errors") }
+    }
 
     sealed class Error {
         object TransactionIsTooOld : Error()

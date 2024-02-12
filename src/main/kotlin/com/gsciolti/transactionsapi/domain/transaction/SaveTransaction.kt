@@ -4,7 +4,7 @@ import arrow.core.Either
 
 interface SaveTransaction {
 
-    operator fun invoke(transaction: Transaction): Either<Error, Transaction>
+    fun save(transaction: Transaction): Either<Error, Transaction>
 
     sealed class Error
 }

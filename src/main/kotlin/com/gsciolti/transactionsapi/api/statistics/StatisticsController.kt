@@ -9,15 +9,16 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController("/statistics")
 open class StatisticsController(
-    private val getAggregatedStatistics: GetAggregatedStatistics
+    getAggregatedStatistics: GetAggregatedStatistics
 ) {
-
     @GetMapping
-    fun getAStatistics(): ResponseEntity<Any> =
+    fun getStatistics(): ResponseEntity<Any> =
         getAggregatedStatistics()
             .fold(
                 { ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build() },
                 { ResponseEntity.ok(it.toResponse()) })
+
+    private val getAggregatedStatistics = getAggregatedStatistics::getAggregatedStatistics
 }
 
 private fun Statistics.toResponse(): StatisticsResponse {

@@ -22,10 +22,7 @@ class LatestTransactionsRepository(seconds: Long) : SaveTransaction, GetAggregat
         IndexedShiftingHashMap(timestampOffsetSeconds) { AggregatedTransactions.empty() }
             .shiftingEvery(Duration.ofSeconds(1)) { first().clear() }
 
-    override fun invoke(transaction: Transaction) = save(transaction)
-    override fun invoke() = getAggregatedStatistics()
-
-    fun save(transaction: Transaction): Either<SaveTransaction.Error, Transaction> {
+    override fun save(transaction: Transaction): Either<SaveTransaction.Error, Transaction> {
 
         val index = Duration.between(transaction.timestamp, Instant.now()).seconds
 
@@ -34,7 +31,7 @@ class LatestTransactionsRepository(seconds: Long) : SaveTransaction, GetAggregat
         return transaction.right()
     }
 
-    fun getAggregatedStatistics(): Either<GetAggregatedStatistics.Error, Statistics> =
+    override fun getAggregatedStatistics(): Either<GetAggregatedStatistics.Error, Statistics> =
         aggregatedTransactions
             .values()
             .filter { it.count != 0L }
@@ -75,7 +72,6 @@ class LatestTransactionsRepository(seconds: Long) : SaveTransaction, GetAggregat
         var min: Money,
         var count: Long
     ) {
-
         companion object {
             fun empty() = AggregatedTransactions(
                 eur("0"),

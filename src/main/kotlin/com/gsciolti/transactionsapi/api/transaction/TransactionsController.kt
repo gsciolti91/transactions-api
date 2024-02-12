@@ -25,7 +25,7 @@ import java.time.Instant
 @RestController("/transactions")
 open class TransactionsController(
     private val createTransaction: CreateTransaction,
-    private val deleteAllTransactions: DeleteAllTransactions
+    deleteAllTransactions: DeleteAllTransactions
 ) {
     @PostMapping
     fun createTransaction(@RequestBody request: CreateTransactionRequest): ResponseEntity<Any> =
@@ -50,12 +50,14 @@ open class TransactionsController(
             })
 
     @DeleteMapping
-    fun deleteAllTransactions(): ResponseEntity<Any> {
+    fun deleteTransactions(): ResponseEntity<Any> {
 
-        deleteAllTransactions.deleteAll()
+        deleteAllTransactions()
 
         return noContent().build()
     }
+
+    private val deleteAllTransactions = deleteAllTransactions::deleteAll
 }
 
 private fun CreateTransactionRequest.toUnvalidatedTransaction(): Either<InvalidJson, UnvalidatedTransaction> =
