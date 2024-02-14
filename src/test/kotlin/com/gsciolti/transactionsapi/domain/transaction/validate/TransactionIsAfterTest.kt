@@ -3,8 +3,8 @@ package com.gsciolti.transactionsapi.domain.transaction.validate
 import arrow.core.left
 import arrow.core.right
 import com.gsciolti.transactionsapi.domain.Money.Companion.eur
-import com.gsciolti.transactionsapi.domain.transaction.CreateTransaction.Error.TransactionIsTooOld
 import com.gsciolti.transactionsapi.domain.transaction.UnvalidatedTransaction
+import com.gsciolti.transactionsapi.domain.transaction.create.CreateTransaction.Error.TransactionIsTooOld
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.Instant

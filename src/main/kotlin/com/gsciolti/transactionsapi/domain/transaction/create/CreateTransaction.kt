@@ -1,7 +1,9 @@
-package com.gsciolti.transactionsapi.domain.transaction
+package com.gsciolti.transactionsapi.domain.transaction.create
 
 import arrow.core.Either
 import arrow.core.flatMap
+import com.gsciolti.transactionsapi.domain.transaction.Transaction
+import com.gsciolti.transactionsapi.domain.transaction.UnvalidatedTransaction
 import com.gsciolti.transactionsapi.domain.transaction.validate.ValidateTransaction
 
 class CreateTransaction(

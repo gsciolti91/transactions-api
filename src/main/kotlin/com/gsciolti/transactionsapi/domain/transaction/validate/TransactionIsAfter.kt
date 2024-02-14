@@ -3,8 +3,8 @@ package com.gsciolti.transactionsapi.domain.transaction.validate
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import com.gsciolti.transactionsapi.domain.transaction.CreateTransaction
 import com.gsciolti.transactionsapi.domain.transaction.UnvalidatedTransaction
+import com.gsciolti.transactionsapi.domain.transaction.create.CreateTransaction
 import java.time.Instant
 
 class TransactionIsAfter(private val timestamp: () -> Instant) : ValidateTransaction {

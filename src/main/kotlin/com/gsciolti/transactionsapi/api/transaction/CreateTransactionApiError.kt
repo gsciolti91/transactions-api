@@ -1,6 +1,6 @@
 package com.gsciolti.transactionsapi.api.transaction
 
-import com.gsciolti.transactionsapi.domain.transaction.CreateTransaction
+import com.gsciolti.transactionsapi.domain.transaction.create.CreateTransaction
 
 sealed class CreateTransactionApiError {
     object InvalidJson : CreateTransactionApiError()

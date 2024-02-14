@@ -1,8 +1,8 @@
 package com.gsciolti.transactionsapi.api
 
 import com.gsciolti.transactionsapi.domain.statistics.GetAggregatedStatistics
-import com.gsciolti.transactionsapi.domain.transaction.CreateTransaction
-import com.gsciolti.transactionsapi.domain.transaction.DeleteAllTransactions
+import com.gsciolti.transactionsapi.domain.transaction.create.CreateTransaction
+import com.gsciolti.transactionsapi.domain.transaction.delete.DeleteAllTransactions
 import com.gsciolti.transactionsapi.domain.transaction.validate.TransactionIsRecent
 import com.gsciolti.transactionsapi.repository.LatestTransactionsRepository
 import org.springframework.context.annotation.Bean

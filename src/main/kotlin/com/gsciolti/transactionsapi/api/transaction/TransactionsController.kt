@@ -6,11 +6,11 @@ import arrow.core.flatMap
 import com.gsciolti.transactionsapi.api.transaction.CreateTransactionApiError.CreateTransactionError
 import com.gsciolti.transactionsapi.api.transaction.CreateTransactionApiError.InvalidJson
 import com.gsciolti.transactionsapi.domain.Money.Companion.eur
-import com.gsciolti.transactionsapi.domain.transaction.CreateTransaction
-import com.gsciolti.transactionsapi.domain.transaction.CreateTransaction.Error.TransactionIsInTheFuture
-import com.gsciolti.transactionsapi.domain.transaction.CreateTransaction.Error.TransactionIsTooOld
-import com.gsciolti.transactionsapi.domain.transaction.DeleteAllTransactions
 import com.gsciolti.transactionsapi.domain.transaction.UnvalidatedTransaction
+import com.gsciolti.transactionsapi.domain.transaction.create.CreateTransaction
+import com.gsciolti.transactionsapi.domain.transaction.create.CreateTransaction.Error.TransactionIsInTheFuture
+import com.gsciolti.transactionsapi.domain.transaction.create.CreateTransaction.Error.TransactionIsTooOld
+import com.gsciolti.transactionsapi.domain.transaction.delete.DeleteAllTransactions
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.ResponseEntity
 import org.springframework.http.ResponseEntity.noContent

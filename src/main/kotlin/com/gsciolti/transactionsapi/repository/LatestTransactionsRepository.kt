@@ -6,8 +6,6 @@ import com.gsciolti.transactionsapi.domain.Money
 import com.gsciolti.transactionsapi.domain.Money.Companion.eur
 import com.gsciolti.transactionsapi.domain.statistics.GetAggregatedStatistics
 import com.gsciolti.transactionsapi.domain.statistics.Statistics
-import com.gsciolti.transactionsapi.domain.transaction.DeleteAllTransactions
-import com.gsciolti.transactionsapi.domain.transaction.SaveTransaction
 import com.gsciolti.transactionsapi.domain.transaction.Transaction
 import com.gsciolti.transactionsapi.domain.transaction.create.SaveTransaction
 import com.gsciolti.transactionsapi.domain.transaction.delete.DeleteAllTransactions

@@ -1,4 +1,4 @@
-package com.gsciolti.transactionsapi.domain.transaction
+package com.gsciolti.transactionsapi.domain.transaction.delete
 
 import arrow.core.Either
 
