@@ -17,8 +17,8 @@ import java.time.Duration
 import java.time.Instant
 
 class LatestTransactionsRepository(
-    private val timestampUpperBound: () -> Instant,
-    timestampOffsetSeconds: Long
+    timestampOffsetSeconds: Long,
+    private val timestampUpperBound: () -> Instant
 ) : SaveTransaction, GetAggregatedStatistics, DeleteAllTransactions {
 
     private val aggregatedTransactions =

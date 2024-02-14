@@ -3,6 +3,7 @@ package com.gsciolti.transactionsapi.api
 import com.gsciolti.transactionsapi.domain.statistics.GetAggregatedStatistics
 import com.gsciolti.transactionsapi.domain.transaction.CreateTransaction
 import com.gsciolti.transactionsapi.domain.transaction.DeleteAllTransactions
+import com.gsciolti.transactionsapi.domain.transaction.validate.TransactionIsInTheLast
 import com.gsciolti.transactionsapi.repository.LatestTransactionsRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,20 +14,15 @@ open class ApiConfiguration {
 
     private val timestampUpperBound: () -> Instant = { Instant.now() }
     private val timestampOffsetSeconds: Long = 60
-    private val transactionsRepository = LatestTransactionsRepository(timestampUpperBound, timestampOffsetSeconds)
+    private val validateTransaction = TransactionIsInTheLast(timestampOffsetSeconds, timestampUpperBound)
+    private val transactionsRepository = LatestTransactionsRepository(timestampOffsetSeconds, timestampUpperBound)
 
     @Bean
-    open fun createTransaction(): CreateTransaction {
-        return CreateTransaction(timestampUpperBound, timestampOffsetSeconds, transactionsRepository)
-    }
+    open fun createTransaction(): CreateTransaction = CreateTransaction(validateTransaction, transactionsRepository)
 
     @Bean
-    open fun getStatistics(): GetAggregatedStatistics {
-        return transactionsRepository
-    }
+    open fun getStatistics(): GetAggregatedStatistics = transactionsRepository
 
     @Bean
-    open fun deleteAllTransactions(): DeleteAllTransactions {
-        return transactionsRepository
-    }
+    open fun deleteAllTransactions(): DeleteAllTransactions = transactionsRepository
 }

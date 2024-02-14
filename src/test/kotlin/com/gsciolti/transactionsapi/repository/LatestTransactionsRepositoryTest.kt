@@ -12,7 +12,7 @@ import kotlin.random.Random
 
 class LatestTransactionsRepositoryTest {
 
-    private val repository = LatestTransactionsRepository({ now() }, timestampOffsetSeconds = 60)
+    private val repository = LatestTransactionsRepository(timestampOffsetSeconds = 60) { now() }
 
     @Test
     fun `it should get aggregated statistics`() {
@@ -34,7 +34,7 @@ class LatestTransactionsRepositoryTest {
 
     @Test
     fun `it should only keep the last x seconds of transactions`() {
-        val repository = LatestTransactionsRepository({ now() }, timestampOffsetSeconds = 2)
+        val repository = LatestTransactionsRepository(timestampOffsetSeconds = 2) { now() }
 
         repository.save(Transaction(eur("5"), now().minusMillis(1500)))
         sleep(1100)
@@ -72,7 +72,7 @@ class LatestTransactionsRepositoryTest {
     @Test
     fun `it should be thread safe`() {
         val last10Seconds = 10L
-        val repository = LatestTransactionsRepository({ now() }, timestampOffsetSeconds = last10Seconds)
+        val repository = LatestTransactionsRepository(timestampOffsetSeconds = last10Seconds) { now() }
         val threads = listOf(
             Thread(repository.save1000Eur(last10Seconds)),
             Thread(repository.save1000Eur(last10Seconds)),
