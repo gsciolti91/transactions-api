@@ -43,4 +43,14 @@ class MoneyTest {
         assertFalse(eur("16.10") < eur("16.10"))
         assertFalse(eur("16.10") < eur("16"))
     }
+
+    @Test
+    fun min() {
+        assertEquals(eur("1"), Money.min(eur("1"), eur("5"), eur("2")))
+    }
+
+    @Test
+    fun max() {
+        assertEquals(eur("5"), Money.max(eur("1"), eur("5"), eur("2")))
+    }
 }

@@ -15,6 +15,12 @@ data class Money private constructor(
 
     companion object {
         fun eur(value: String) = Money(value, "EUR")
+
+        fun min(first: Money, vararg others: Money): Money =
+            others.fold(first) { min, next -> if (next < min) next else min }
+
+        fun max(first: Money, vararg others: Money): Money =
+            others.fold(first) { max, next -> if (next > max) next else max }
     }
 
     operator fun plus(other: Money): Money =
