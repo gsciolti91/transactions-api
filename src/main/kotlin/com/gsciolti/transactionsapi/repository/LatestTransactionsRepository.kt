@@ -4,6 +4,8 @@ import arrow.core.Either
 import arrow.core.right
 import com.gsciolti.transactionsapi.domain.Money
 import com.gsciolti.transactionsapi.domain.Money.Companion.eur
+import com.gsciolti.transactionsapi.domain.Money.Companion.max
+import com.gsciolti.transactionsapi.domain.Money.Companion.min
 import com.gsciolti.transactionsapi.domain.statistics.GetAggregatedStatistics
 import com.gsciolti.transactionsapi.domain.statistics.Statistics
 import com.gsciolti.transactionsapi.domain.transaction.Transaction
@@ -40,14 +42,12 @@ class LatestTransactionsRepository(
                 total.apply {
                     sum += partial.sum
 
-                    if (count == 0L || partial.min < min) {
+                    if (count == 0L) {
                         min = partial.min
                     }
 
-                    if (partial.max > max) {
-                        max = partial.max
-                    }
-
+                    min = min(min, partial.min)
+                    max = max(max, partial.max)
                     count += partial.count
                 }
             }
@@ -86,14 +86,12 @@ class LatestTransactionsRepository(
             synchronized(this) {
                 sum += transaction.amount
 
-                if (count == 0L || transaction.amount < min) {
+                if (count == 0L) {
                     min = transaction.amount
                 }
 
-                if (transaction.amount > max) {
-                    max = transaction.amount
-                }
-
+                min = min(min, transaction.amount)
+                max = max(max, transaction.amount)
                 count++
             }
         }
