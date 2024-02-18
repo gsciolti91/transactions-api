@@ -41,12 +41,7 @@ class LatestTransactionsRepository(
             .fold(AggregatedTransactions.empty()) { total, partial ->
                 total.apply {
                     sum += partial.sum
-
-                    if (count == 0L) {
-                        min = partial.min
-                    }
-
-                    min = min(min, partial.min)
+                    min = if (count == 0L) partial.min else min(min, partial.min)
                     max = max(max, partial.max)
                     count += partial.count
                 }
@@ -85,12 +80,7 @@ class LatestTransactionsRepository(
         fun add(transaction: Transaction) {
             synchronized(this) {
                 sum += transaction.amount
-
-                if (count == 0L) {
-                    min = transaction.amount
-                }
-
-                min = min(min, transaction.amount)
+                min = if (count == 0L) transaction.amount else min(min, transaction.amount)
                 max = max(max, transaction.amount)
                 count++
             }
